@@ -1,0 +1,166 @@
+
+
+# ---------------------------------------------------------------------------
+# For reference:
+#
+# C___
+# CR__
+# CRU_
+# CRUD
+# C_U_
+# C_UD
+# C__D
+# CR_D
+# _R__
+# _RU_
+# _R_D
+# _RUD
+# __U_
+# __UD
+# ___D
+# ---------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------------------
+# Vendors
+# ---------------------------------------------------------------------------
+vendors:
+  vendor1:
+    id: vendor1
+    name: Valid Vendor
+    party_type: NotUsed
+    api_key: HruYu1fWDENhOQyaIOPH4/P21Ik=
+    api_secret: NXiz6PpL0z5CuzCETekuTw==
+    use_locations: false
+    uses_external_auth: false
+    external_auth_route: NotUsed
+    external_party_id: NotUsed
+    active: true
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+    users:
+      user1:
+        id: user1
+        username: user1
+        password: user1
+        active: true
+        primary_vendor_id: NotUsed
+        created_at: 2013-10-03 14:51:00
+        updated_at: 2013-10-03 14:51:00
+      user2:
+        id: user2
+        username: user2
+        password: user2
+        active: false
+        primary_vendor_id: NotUsed
+        created_at: 2013-10-03 14:51:00
+        updated_at: 2013-10-03 14:51:00
+
+user_rights:
+
+
+
+# ---------------------------------------------------------------------------
+# Resources
+# ---------------------------------------------------------------------------
+resources:
+  resource1:
+    id: resource1
+    verb: GET
+    route: /billings/api/v1/banks
+    active: true
+    group_id: group1
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+  resource2:
+    id: resource2
+    verb: GET
+    route: /billings/api/v1/banks/:id
+    active: true
+    group_id: group1
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+  resource3:
+    id: resource3
+    verb: POST
+    route: /billings/api/v1/banks
+    active: true
+    group_id: group1
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+  resource4:
+    id: resource4
+    verb: PUT
+    route: /billings/api/v1/banks/:id
+    active: true
+    group_id: group1
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+  resource5:
+    id: resource5
+    verb: DELETE
+    route: /billings/api/v1/banks/:id
+    active: true
+    group_id: group1
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+
+# ---------------------------------------------------------------------------
+# Resource Groups
+# ---------------------------------------------------------------------------
+resource_groups:
+  group1:
+    id: group1
+    name: crud
+    CRUD: CRUD
+    active: true
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+  group2:
+    id: group2
+    name: c___
+    CRUD: C___
+    active: true
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+  group3:
+    id: group2
+    name: _r__
+    CRUD: _R__
+    active: true
+    created_at: 2013-10-03 14:51:00
+    updated_at: 2013-10-03 14:51:00
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

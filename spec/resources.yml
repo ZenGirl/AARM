@@ -1,0 +1,103 @@
+---
+  # All test resources
+  :resources:
+    -
+      # Active at all times
+      :id: 1
+      :name: Billings Active
+      :prefix: /billings/api/v1
+      :suffixes:
+        -
+          :suffix: !ruby/regexp '/^\/banks$/'
+          :verbs:
+            -
+              :verb: GET
+              :active:
+                -
+                  :from_date: null
+                  :to_date: null
+            -
+              :verb: POST
+              :active:
+                -
+                  :from_date: null
+                  :to_date: null
+            -
+              :verb: HEAD
+              :active:
+                -
+                  :from_date: null
+                  :to_date: null
+        -
+          :suffix: !ruby/regexp '/^\/banks/[\d]+$/'
+          :verbs:
+            -
+              :verb: PUT
+              :active:
+                -
+                  :from_date: null
+                  :to_date: null
+            -
+              :verb: DELETE
+              :active:
+                -
+                  :from_date: null
+                  :to_date: null
+
+    -
+      # Inactive for specific dates
+      :id: 2
+      :name: Billings In-Active
+      :prefix: /billings/api/v2
+      :suffixes:
+        -
+          :suffix: !ruby/regexp '/^\/banks$/'
+          :verbs:
+            -
+              :verb: GET
+              :active:
+                -
+                  :from_date: null
+                  :to_date: "2013-10-01 23:59:59"
+                -
+                  :from_date: "2013-10-03 00:00:00"
+                  :to_date: null
+            -
+              :verb: POST
+              :active:
+                -
+                  :from_date: null
+                  :to_date: "2013-10-01 23:59:59"
+                -
+                  :from_date: "2013-10-03 00:00:00"
+                  :to_date: null
+            -
+              :verb: HEAD
+              :active:
+                -
+                  :from_date: null
+                  :to_date: "2013-10-01 23:59:59"
+                -
+                  :from_date: "2013-10-03 00:00:00"
+                  :to_date: null
+        -
+          :suffix: !ruby/regexp '/^\/banks\/[\d]+$/'
+          :verbs:
+            -
+              :verb: PUT
+              :active:
+                -
+                  :from_date: null
+                  :to_date: "2013-10-01 23:59:59"
+                -
+                  :from_date: "2013-10-03 00:00:00"
+                  :to_date: null
+            -
+              :verb: DELETE
+              :active:
+                -
+                  :from_date: null
+                  :to_date: "2013-10-01 23:59:59"
+                -
+                  :from_date: "2013-10-03 00:00:00"
+                  :to_date: null

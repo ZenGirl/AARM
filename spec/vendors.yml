@@ -1,0 +1,116 @@
+---
+  # All test vendors
+  :vendors:
+    -
+      # Valid Vendor active across time
+      :id: 1
+      :name: vendor1
+      :display_name: Vendor 1
+      :keys:
+        -
+          :from_date: null
+          :to_date: null
+          :api_key: "QOYNT/+GeMBQJzX+QSBuEA=="
+          :api_secret: "MpzZMi+Aug6m/vd5VYdHrA=="
+      :active: # All time
+         -
+          :from_date: null
+          :to_date: null
+      :use_locations: false
+      :locations:
+        -
+          :ipv4: "127.0.0.1"
+          :active:
+            -
+              :from_date: null
+              :to_date: null
+      :roles:
+        -
+          :name: "default"
+          :active:
+            -
+              :from_date: null
+              :to_date: null
+              :pass_plain: "vendor1_default"
+              :md5_password: "1f6edad466a632cb0c91fdc9c500b437"
+          :rights:
+            -
+              :from_date: null
+              :to_date: null
+              :crud: "_R__"
+              :on_resources:
+                - 1
+        -
+          :name: "IT"
+          :active:
+            -
+              :from_date: null
+              :to_date: null
+              :pass_plain: "vendor1_IT"
+              :md5_password: "80cf612b4f54afa0d759e02a49d97db9"
+          :rights:
+            -
+              :from_date: null
+              :to_date: null
+              :crud: "CRUD"
+              :on_resources:
+                - 1
+                - 2
+    -
+      # Valid Vendor limited across time
+      :id: 2
+      :name: vendor2
+      :display_name: Vendor 2
+      :keys:
+        -
+          :from_date: null
+          :to_date: null
+          :api_key: "wBxPg1il07wNMdkClLWsqg=="
+          :api_secret: "q9cqANbXvthP6ypSMwQ3ow=="
+      :active:
+         -
+          :from_date: null
+          :to_date: "2013-10-01 23:59:59"
+         -
+          :from_date: "2013-10-03 00:00:00"
+          :to_date: null
+      :use_locations: false
+      :locations:
+        -
+          :ipv4: "127.0.0.1"
+          :active:
+            -
+              :from_date: null
+              :to_date: null
+      :roles:
+        -
+          :name: "default"
+          :active:
+            -
+              :from_date: null
+              :to_date: null
+              :pass_plain: "vendor1_default"
+              :md5_password: "1f6edad466a632cb0c91fdc9c500b437"
+          :rights:
+            -
+              :from_date: null
+              :to_date: null
+              :crud: "_R__"
+              :on_resources:
+                - 1
+        -
+          :name: "IT"
+          :active:
+            -
+              :from_date: null
+              :to_date: null
+              :pass_plain: "vendor1_IT"
+              :md5_password: "80cf612b4f54afa0d759e02a49d97db9"
+          :rights:
+            -
+              :from_date: null
+              :to_date: null
+              :crud: "CRUD"
+              :on_resources:
+                - 1
+                - 2

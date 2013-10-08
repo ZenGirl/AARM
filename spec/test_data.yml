@@ -1,166 +1,94 @@
-
-
-# ---------------------------------------------------------------------------
-# For reference:
-#
-# C___
-# CR__
-# CRU_
-# CRUD
-# C_U_
-# C_UD
-# C__D
-# CR_D
-# _R__
-# _RU_
-# _R_D
-# _RUD
-# __U_
-# __UD
-# ___D
-# ---------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-# ---------------------------------------------------------------------------
-# Vendors
-# ---------------------------------------------------------------------------
-vendors:
-  vendor1:
-    id: vendor1
-    name: Valid Vendor
-    party_type: NotUsed
-    api_key: HruYu1fWDENhOQyaIOPH4/P21Ik=
-    api_secret: NXiz6PpL0z5CuzCETekuTw==
-    use_locations: false
-    uses_external_auth: false
-    external_auth_route: NotUsed
-    external_party_id: NotUsed
-    active: true
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-    users:
-      user1:
-        id: user1
-        username: user1
-        password: user1
-        active: true
-        primary_vendor_id: NotUsed
-        created_at: 2013-10-03 14:51:00
-        updated_at: 2013-10-03 14:51:00
-      user2:
-        id: user2
-        username: user2
-        password: user2
-        active: false
-        primary_vendor_id: NotUsed
-        created_at: 2013-10-03 14:51:00
-        updated_at: 2013-10-03 14:51:00
-
-user_rights:
-
-
-
-# ---------------------------------------------------------------------------
-# Resources
-# ---------------------------------------------------------------------------
-resources:
-  resource1:
-    id: resource1
-    verb: GET
-    route: /billings/api/v1/banks
-    active: true
-    group_id: group1
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-  resource2:
-    id: resource2
-    verb: GET
-    route: /billings/api/v1/banks/:id
-    active: true
-    group_id: group1
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-  resource3:
-    id: resource3
-    verb: POST
-    route: /billings/api/v1/banks
-    active: true
-    group_id: group1
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-  resource4:
-    id: resource4
-    verb: PUT
-    route: /billings/api/v1/banks/:id
-    active: true
-    group_id: group1
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-  resource5:
-    id: resource5
-    verb: DELETE
-    route: /billings/api/v1/banks/:id
-    active: true
-    group_id: group1
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-
-# ---------------------------------------------------------------------------
-# Resource Groups
-# ---------------------------------------------------------------------------
-resource_groups:
-  group1:
-    id: group1
-    name: crud
-    CRUD: CRUD
-    active: true
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-  group2:
-    id: group2
-    name: c___
-    CRUD: C___
-    active: true
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-  group3:
-    id: group2
-    name: _r__
-    CRUD: _R__
-    active: true
-    created_at: 2013-10-03 14:51:00
-    updated_at: 2013-10-03 14:51:00
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+---
+  vendors: 
+    - 
+      name: "vendor1"
+      display_name: "Vendor #1"
+      keys: 
+        - 
+          from_date: null
+          to_date: null
+          api_key: "VENDOR_1"
+          api_secret: "API_SECRET_1"
+      external: 
+        uses_external_auth: false
+        external_auth_route: ""
+        external_party_id: ""
+      active: 
+        - 
+          from_date: null
+          to_date: null
+      use_locations: false
+      locations: 
+        - 
+          ipv4: "127.0.0.1"
+          active: 
+            - 
+              from_date: null
+              to_date: null
+      roles: 
+        - 
+          name: "default"
+          active: 
+            - 
+              from_date: null
+              to_date: null
+              pass_plain: "vendor1_default"
+              md5_password: "1f6edad466a632cb0c91fdc9c500b437"
+          rights: 
+            - 
+              from_date: null
+              to_date: null
+              crud: "_R__"
+              on_resources: 
+                - "billings"
+        - 
+          name: "IT"
+          active: 
+            - 
+              from_date: null
+              to_date: null
+              pass_plain: "vendor1_IT"
+              md5_password: "80cf612b4f54afa0d759e02a49d97db9"
+          rights: 
+            - 
+              from_date: null
+              to_date: null
+              crud: "CRUD"
+              on_resources: 
+                - "billings"
+  resources: 
+    - 
+      name: "billings"
+      prefix: "/billings/api/v1"
+      suffixes: 
+        - 
+          suffix: !ruby/regexp "^/banks$"
+          verbs: 
+            - 
+              GET: 
+                - 
+                  from_date: null
+                  to_date: null
+            - 
+              POST: 
+                - 
+                  from_date: null
+                  to_date: null
+        - 
+          suffix: !ruby/regexp "^/banks/[\d]+$"
+          verbs: 
+            - 
+              GET: 
+                - 
+                  from_date: null
+                  to_date: null
+            - 
+              PUT: 
+                - 
+                  from_date: null
+                  to_date: null
+            - 
+              DELETE: 
+                - 
+                  from_date: null
+                  to_date: null

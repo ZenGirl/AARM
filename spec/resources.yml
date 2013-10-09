@@ -32,6 +32,12 @@
           :suffix: !ruby/regexp '/^\/banks/[\d]+$/'
           :verbs:
             -
+              :verb: GET
+              :active:
+                -
+                  :from_date: null
+                  :to_date: null
+            -
               :verb: PUT
               :active:
                 -
@@ -43,7 +49,6 @@
                 -
                   :from_date: null
                   :to_date: null
-
     -
       # Inactive for specific dates
       :id: 2

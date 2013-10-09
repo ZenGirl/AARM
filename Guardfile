@@ -8,9 +8,10 @@ end
 guard :rspec, :wait => 20, :all_after_pass => false, cli: '--color --format nested --fail-fast --drb' do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^spec/lib/.+_spec\.rb$})
-  watch(%r{^lib/(.+)\.rb$})             { |m| "spec/lib/#{m[1]}_spec.rb" }
-  watch(%r{^lib/rack/(.+)\.rb$})        { |m| "spec/lib/#{m[1]}_spec.rb" }
-  watch(%r{^lib/rack/aarm/(.+)\.rb$})   { |m| "spec/lib/#{m[1]}_spec.rb" }
+  watch(%r{^lib/(.+)\.rb$})              { |m| "spec/lib/#{m[1]}_spec.rb" }
+  watch(%r{^lib/rack/(.+)\.rb$})         { |m| "spec/lib/#{m[1]}_spec.rb" }
+  watch(%r{^lib/rack/aarm/(.+)\.rb$})    { |m| "spec/lib/#{m[1]}_spec.rb" }
+  watch(%r{^lib/rack/aarm/dsl(.+)\.rb$}) { |m| "spec/lib/dsl/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { "spec" }
 end
 

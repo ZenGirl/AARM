@@ -16,6 +16,14 @@ module Rack
           raise ArgumentError.new(Rack::AARM::DSL::Helpers::ARGUMENTS_BAD) unless secret.is_a? String and secret.strip.size > 0
           @active_range, @key, @secret = active_range, key, secret
         end
+
+        def to_hash
+          hash = {
+              active_range: @active_range.to_hash, key: @key, secret: @secret
+          }
+          hash
+        end
+
       end
     end
   end

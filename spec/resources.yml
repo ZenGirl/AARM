@@ -14,20 +14,20 @@
               :verb: GET
               :active:
                 -
-                  :from_date: null
-                  :to_date: null
+                  :from_date: "1970-01-01"
+                  :to_date: "2100-01-01"
             -
               :verb: POST
               :active:
                 -
-                  :from_date: null
-                  :to_date: null
+                  :from_date: "1970-01-01"
+                  :to_date: "2100-01-01"
             -
               :verb: HEAD
               :active:
                 -
-                  :from_date: null
-                  :to_date: null
+                  :from_date: "1970-01-01"
+                  :to_date: "2100-01-01"
         -
           :suffix: !ruby/regexp '/^\/banks/[\d]+$/'
           :verbs:
@@ -35,20 +35,20 @@
               :verb: GET
               :active:
                 -
-                  :from_date: null
-                  :to_date: null
+                  :from_date: "1970-01-01"
+                  :to_date: "2100-01-01"
             -
               :verb: PUT
               :active:
                 -
-                  :from_date: null
-                  :to_date: null
+                  :from_date: "1970-01-01"
+                  :to_date: "2100-01-01"
             -
               :verb: DELETE
               :active:
                 -
-                  :from_date: null
-                  :to_date: null
+                  :from_date: "1970-01-01"
+                  :to_date: "2100-01-01"
     -
       # Inactive for specific dates
       :id: 2
@@ -62,29 +62,29 @@
               :verb: GET
               :active:
                 -
-                  :from_date: null
+                  :from_date: "1970-01-01"
                   :to_date: "2013-10-01 23:59:59"
                 -
                   :from_date: "2013-10-03 00:00:00"
-                  :to_date: null
+                  :to_date: "2100-01-01"
             -
               :verb: POST
               :active:
                 -
-                  :from_date: null
+                  :from_date: "1970-01-01"
                   :to_date: "2013-10-01 23:59:59"
                 -
                   :from_date: "2013-10-03 00:00:00"
-                  :to_date: null
+                  :to_date: "2100-01-01"
             -
               :verb: HEAD
               :active:
                 -
-                  :from_date: null
+                  :from_date: "1970-01-01"
                   :to_date: "2013-10-01 23:59:59"
                 -
                   :from_date: "2013-10-03 00:00:00"
-                  :to_date: null
+                  :to_date: "2100-01-01"
         -
           :suffix: !ruby/regexp '/^\/banks\/[\d]+$/'
           :verbs:
@@ -92,17 +92,17 @@
               :verb: PUT
               :active:
                 -
-                  :from_date: null
+                  :from_date: "1970-01-01"
                   :to_date: "2013-10-01 23:59:59"
                 -
                   :from_date: "2013-10-03 00:00:00"
-                  :to_date: null
+                  :to_date: "2100-01-01"
             -
               :verb: DELETE
               :active:
                 -
-                  :from_date: null
+                  :from_date: "1970-01-01"
                   :to_date: "2013-10-01 23:59:59"
                 -
                   :from_date: "2013-10-03 00:00:00"
-                  :to_date: null
+                  :to_date: "2100-01-01"

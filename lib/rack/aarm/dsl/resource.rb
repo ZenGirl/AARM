@@ -1,3 +1,5 @@
+require 'json'
+
 module Rack
   module AARM
     module DSL
@@ -28,6 +30,16 @@ module Rack
           obj = Suffix.new(path_regex)
           @suffixes << obj
           obj
+        end
+
+        def to_hash
+          hash = {
+              id: @id, name: @name, prefix: @prefix, suffixes: []
+          }
+          @suffixes.each do |suffix|
+            hash[:suffixes] << suffix.to_hash
+          end
+          hash
         end
 
       end

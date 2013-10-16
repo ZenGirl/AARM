@@ -70,7 +70,15 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
         # Override == to avoid comparison issues
         # -------------------------------------------------------------------
         def ==(other)
+          raise ArgumentError.new('other is not a ActiveRange') unless other.is_a? ActiveRange
           other.from_date == @from_date and other.to_date == @to_date
+        end
+
+        def to_hash
+          hash = {
+              from_date: @from_date, to_date: @to_date
+          }
+          hash
         end
 
       end

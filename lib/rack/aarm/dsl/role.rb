@@ -65,6 +65,16 @@ module Rack
         def back_to_vendor
           @caller
         end
+
+        def to_hash
+          hash = {
+              name: @name, password_plain: @password_plain, password_md5: @password_md5, active_ranges: [], rights: []
+          }
+          @active_ranges.each { |key| hash[:active_ranges] << key.to_hash }
+          @rights.each { |key| hash[:rights] << key.to_hash }
+          hash
+        end
+
       end
     end
   end

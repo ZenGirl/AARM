@@ -69,6 +69,14 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
           self
         end
 
+        def to_hash
+          hash = {
+              ipv4: @ipv4, active_ranges: []
+          }
+          @active_ranges.each { |key| hash[:active_ranges] << key.to_hash }
+          hash
+        end
+
       end
     end
   end

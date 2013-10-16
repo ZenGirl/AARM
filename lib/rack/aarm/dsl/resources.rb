@@ -1,3 +1,5 @@
+require 'json'
+
 module Rack
   module AARM
     module DSL
@@ -62,6 +64,15 @@ module Rack
           end
           results.size == 0 ? nil : results
         end
+
+        def to_hash
+          hash = []
+          @resources.each do |resource|
+            hash << resource.to_hash
+          end
+          hash
+        end
+
       end
     end
   end

@@ -1,3 +1,5 @@
+require 'base64'
+
 module Rack
   module AARM
     class APIKey

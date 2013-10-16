@@ -53,3 +53,13 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
     end
   end
 end
+
+# ---------------------------------------------------------------------------
+# Add the blank? option to string
+# ---------------------------------------------------------------------------
+class String
+  def blank?
+    return true if self.nil?
+    self !~ /[^[:space:]]/
+  end
+end

@@ -50,6 +50,17 @@ module Rack
         def back_to_suffix
           @caller
         end
+
+        def to_hash
+          hash = {
+              name: @name, active_ranges: []
+          }
+          @active_ranges.each do |active_range|
+            hash[:active_ranges] << active_range.to_hash
+          end
+          hash
+        end
+
       end
     end
   end

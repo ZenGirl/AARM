@@ -2,7 +2,7 @@ module Rack
   module AARM
     module DSL
       class Vendors
-        attr_accessor :vendors, :resources
+        attr_accessor :vendors
 
         # -------------------------------------------------------------------
         # Need the helpers
@@ -15,14 +15,12 @@ module Rack
         # -------------------------------------------------------------------
         def initialize
           @vendors = []
-          @resources = []
         end
 
         # -------------------------------------------------------------------
         # Add a vendor
         # -------------------------------------------------------------------
         def add(vendor)
-          vendor.resources = @resources
           @vendors << vendor
         end
 
@@ -50,10 +48,19 @@ module Rack
         def find_by_key(key)
           result = nil
           @vendors.each do |vendor|
-            result = vendor if vendor.keys.any? { |k| k.key == key }
+            result = vendor if vendor.vendor_keys.any? { |k| k.key == key }
           end
           result
         end
+
+        def to_hash
+          hash = []
+          vendors.each do |vendor|
+            hash << vendor.to_hash
+          end
+          hash
+        end
+
       end
     end
   end

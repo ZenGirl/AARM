@@ -9,8 +9,7 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
       #   See +/doc/aarm_-_authentication_authorisation_rack_middleware.html+
       # ---------------------------------------------------------------------
       class Vendor
-        attr_accessor :id, :name, :keys, :active_ranges, :use_locations, :locations, :roles
-        attr_accessor :resources
+        attr_accessor :id, :name, :vendor_keys, :active_ranges, :use_locations, :locations, :roles
 
         # -------------------------------------------------------------------
         # Need the helpers
@@ -42,7 +41,7 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
           raise ArgumentError.new(Rack::AARM::DSL::Helpers::VENDOR_ID_BAD) if id.nil? or !id.is_a? Integer or id < 1
           raise ArgumentError.new(Rack::AARM::DSL::Helpers::VENDOR_NAME_BAD) if name.nil? or !name.is_a? String or name.strip.blank?
           @id, @name = id, name
-          @keys, @active_ranges, @use_locations, @locations, @roles = [], [], false, [], []
+          @vendor_keys, @active_ranges, @use_locations, @locations, @roles = [], [], false, [], []
           @resources = []
         end
 
@@ -51,7 +50,7 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
         # Method is chainable.
         # -------------------------------------------------------------------
         def add_key(active_range, key, secret)
-          @keys << VendorKey.new(active_range, key, secret)
+          @vendor_keys << VendorKey.new(active_range, key, secret)
           self
         end
 
@@ -161,6 +160,17 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
           end
           return false unless path_allowed
           true
+        end
+
+        def to_hash
+          hash = {
+              id: @id, name: @name, vendor_keys: [], active_ranges: [], use_locations: @use_locations, locations: [], roles: []
+          }
+          @vendor_keys.each { |obj| hash[:vendor_keys] << obj.to_hash }
+          @active_ranges.each { |key| hash[:active_ranges] << key.to_hash }
+          @locations.each { |key| hash[:locations] << key.to_hash }
+          @roles.each { |key| hash[:roles] << key.to_hash }
+          hash
         end
 
       end

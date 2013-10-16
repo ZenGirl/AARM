@@ -44,6 +44,16 @@ module Rack
           self
         end
 
+        def to_hash
+          hash = {
+              regex: @regex, verbs: []
+          }
+          @verbs.each do |verb|
+            hash[:verbs] << verb.to_hash
+          end
+          hash
+        end
+
       end
     end
   end

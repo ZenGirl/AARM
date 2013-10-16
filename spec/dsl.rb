@@ -1,6 +1,9 @@
 require 'awesome_print'
+require 'json'
 
-require_relative '../lib/aarm'
+%w(active_range location resource resources role role_right suffix vendor vendor_key vendors verb).each do |f|
+  require_relative "../lib/rack/aarm/dsl/#{f}"
+end
 
 module Rack
   module AARM
@@ -60,9 +63,9 @@ module Rack
       puts "Checking v2/banks 2013-10-03"
       puts resources.is_active? '/billings/api/v2/banks', DateTime.new(2013, 10, 3), 'GET'
 
+      puts JSON.pretty_generate(resources.to_hash)
 
       vendors = Vendors.new
-      vendors.resources = resources
 
       vendor = Vendor.new(1, 'vendor1')
       .add_key(ActiveRange.for_all_time, "QOYNT/+GeMBQJzX+QSBuEA==", "MpzZMi+Aug6m/vd5VYdHrA==")
@@ -96,8 +99,24 @@ module Rack
       role = vendor.find_role 'default', '1f6edad466a632cb0c91fdc9c500b437'
       #ap role
       puts "role active on 2013-10-01   : #{role.active_on? '2013-10-01'}"
-      puts "can access path             : #{vendor.can_access? path: '/billings/api/v1/banks/123456', via: 'GET', on: '2013-10-14 12:35:56', role: 'admin', pass: 'b616111a3c791f223b89957e72859ad2', ipv4: '127.0.0.1'}"
-      puts "can access path             : #{vendor.can_access? path: '/billings/api/v3/banks/123456', via: 'GET', on: '2013-10-14 12:35:56', role: 'admin', pass: 'b616111a3c791f223b89957e72859ad2', ipv4: '127.0.0.1'}"
+      puts vendor.can_access?(resources, {
+          path: '/billings/api/v1/banks/123456',
+          via: 'GET',
+          on: '2013-10-14 12:35:56',
+          role: 'admin',
+          pass: 'b616111a3c791f223b89957e72859ad2',
+          ipv4: '127.0.0.1'
+      })
+      puts vendor.can_access?(resources, {
+          path: '/billings/api/v3/banks/123456',
+          via: 'GET',
+          on: '2013-10-14 12:35:56',
+          role: 'admin',
+          pass: 'b616111a3c791f223b89957e72859ad2',
+          ipv4: '127.0.0.1'
+      })
+
+      puts JSON.pretty_generate(vendors.to_hash)
 
     end
   end

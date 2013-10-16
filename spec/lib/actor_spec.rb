@@ -22,9 +22,9 @@ describe Rack::AARM do
     # -----------------------------------------------------------------------
     # Generate KEYS and Signatures
     # -----------------------------------------------------------------------
-    VALID_API_KEY = 'HruYu1fWDENhOQyaIOPH4/P21Ik='
+    VALID_API_KEY = 'QOYNT/+GeMBQJzX+QSBuEA=='
     INVALID_API_KEY = 'BAD-KEY'
-    VALID_API_SECRET = 'NXiz6PpL0z5CuzCETekuTw=='
+    VALID_API_SECRET = 'MpzZMi+Aug6m/vd5VYdHrA=='
     INVALID_API_SECRET = 'BAD-SECRET'
     VALID_SIGNATURE = 'hello world'
     INVALID_SIGNATURE = 'hello world'
@@ -71,52 +71,51 @@ describe Rack::AARM do
       # ---------------------------------------------------------------------
       # Configure some vendors
       # ---------------------------------------------------------------------
-      @vendors = [
-          {name: 'vendor1', api_key: 'VENDOR_1', api_secret: VALID_API_SECRET, active: true},
-          {name: 'vendor2', api_key: 'VENDOR_2', api_secret: 'API_SECRET_2', active: false},
-          {name: 'vendor3', api_key: 'VENDOR_3', api_secret: 'API_SECRET_3', active: true, use_locations: true},
-          {name: 'vendor4', api_key: 'VENDOR_4', api_secret: 'API_SECRET_4', active: false, use_locations: true}
-      ]
-      Rack::AARM::Configuration.vendors = @vendors
-      @locations = [
-          {ipv4: '127.0.0.1', active: true, vendor_id: 'vendor3'},
-      ]
-      Rack::AARM::Configuration.locations = @locations
-      @resources = [
-
-      ]
-      @config = {
-          vendors: [
-              {
-                  name: 'vendor1',
-                  display_name: 'Vendor #1',
-                  keys: [
-                      {from_date: nil, to_date: nil, api_key: 'VENDOR_1', api_secret: 'API_SECRET_1'}
-                  ],
-                  use_locations: false,
-                  uses_external_auth: false, external_auth_route: '', external_party_id: '',
-                  active: [{from_date: nil, to_date: nil}],
-                  locations: [
-                      {ipv4: '127.0.0.1', active: [{from_date: nil, to_date: nil}]}
-                  ],
-                  groups: [
-                      {name: 'default', rights: [
-                          {from_date: nil, to_date: nil, crud: '_R__'}
-                      ]},
-                      {name: 'IT', rights: [
-                          {from_date: nil, to_date: nil, crud: 'CRUD'}
-                      ]}
-                  ]
-              }
-          ]
-      }
+      #@vendors = [
+      #    {name: 'vendor1', api_key: 'VENDOR_1', api_secret: VALID_API_SECRET, active: true},
+      #    {name: 'vendor2', api_key: 'VENDOR_2', api_secret: 'API_SECRET_2', active: false},
+      #    {name: 'vendor3', api_key: 'VENDOR_3', api_secret: 'API_SECRET_3', active: true, use_locations: true},
+      #    {name: 'vendor4', api_key: 'VENDOR_4', api_secret: 'API_SECRET_4', active: false, use_locations: true}
+      #]
+      #Rack::AARM::Configuration.vendors = @vendors
+      #@locations = [
+      #    {ipv4: '127.0.0.1', active: true, vendor_id: 'vendor3'},
+      #]
+      #Rack::AARM::Configuration.locations = @locations
+      #@resources = [
+      #
+      #]
+      #@config = {
+      #    vendors: [
+      #        {
+      #            name: 'vendor1',
+      #            display_name: 'Vendor #1',
+      #            keys: [
+      #                {from_date: nil, to_date: nil, api_key: 'VENDOR_1', api_secret: 'API_SECRET_1'}
+      #            ],
+      #            use_locations: false,
+      #            uses_external_auth: false, external_auth_route: '', external_party_id: '',
+      #            active: [{from_date: nil, to_date: nil}],
+      #            locations: [
+      #                {ipv4: '127.0.0.1', active: [{from_date: nil, to_date: nil}]}
+      #            ],
+      #            groups: [
+      #                {name: 'default', rights: [
+      #                    {from_date: nil, to_date: nil, crud: '_R__'}
+      #                ]},
+      #                {name: 'IT', rights: [
+      #                    {from_date: nil, to_date: nil, crud: 'CRUD'}
+      #                ]}
+      #            ]
+      #        }
+      #    ]
+      #}
     end
 
     # -----------------------------------------------------------------------
     # Request has bad or missing Authorisation header
     # -----------------------------------------------------------------------
     context "incoming request has no or badly formatted Authorization header" do
-
       [
           {msg: 'auth_header_missing', code: '001', headers: {}},
           {msg: 'auth_header_empty', code: '003', headers: {AUTHORISATION_HEADER => ''}},
@@ -168,25 +167,25 @@ describe Rack::AARM do
     # -----------------------------------------------------------------------
     context "has a known API-KEY and is active, but uses locations and the remote is not allowed" do
 
-        it "Has no headers set" do
-          #TODO Hmm. This will be caught by prior tests...
-        end
-
-        it "And has various headers set" do
-          # NGinx sends X-Real-IP
-          # Apache can send HTTP_X_Real_IP and/or REMOTE_ADDR
-          %w(X-Real-IP HTTP_X_Real_IP REMOTE_ADDR).each do |header|
-            request = Rack::MockRequest.new(Rack::AARM::Actor.new(plain))
-            response = request.get('/', {
-                AUTHORISATION_HEADER => "VENDOR_3:IRRELEVANT_TO_THIS_TEST",
-                header => '192.168.1.1'
-            })
-            response.status.should eq(401)
-            validate_code_and_messages(response, '009', @messages['009'], MESSAGE2_BAD_LOCATION)
-          end
-        end
-
+      it "Has no headers set" do
+        #TODO Hmm. This will be caught by prior tests...
       end
+
+      it "And has various headers set" do
+        # NGinx sends X-Real-IP
+        # Apache can send HTTP_X_Real_IP and/or REMOTE_ADDR
+        %w(X-Real-IP HTTP_X_Real_IP REMOTE_ADDR).each do |header|
+          request = Rack::MockRequest.new(Rack::AARM::Actor.new(plain))
+          response = request.get('/', {
+              AUTHORISATION_HEADER => "VENDOR_3:IRRELEVANT_TO_THIS_TEST",
+              header => '192.168.1.1'
+          })
+          response.status.should eq(401)
+          validate_code_and_messages(response, '009', @messages['009'], MESSAGE2_BAD_LOCATION)
+        end
+      end
+
+    end
 
     # -----------------------------------------------------------------------
     # Test query string and body data fr various verbs
@@ -195,19 +194,33 @@ describe Rack::AARM do
 
       context "POST" do
 
+        # -------------------------------------------------------------------
+        # Configure the system correctly
+        # -------------------------------------------------------------------
+        before(:all) do
+          Rack::AARM::Configuration.reset
+          err_logger = Logger.new(STDERR)
+          err_logger.level = ::Logger::DEBUG
+          err_logger.datetime_format = '%Y-%m-%d %H:%M:%S'
+          err_logger.formatter = proc do |severity, datetime, progname, msg|
+            "#{datetime.utc}: [#{severity.ljust(8)}] #{msg}\n"
+          end
+          Rack::AARM::Configuration.logger = err_logger
+          Rack::AARM::Configuration.environment = :test
+          Rack::AARM::Configuration.configure_from(File.join(__dir__, '..', 'vendors.yml'))
+          Rack::AARM::Configuration.configure_from(File.join(__dir__, '..', 'resources.yml'))
+          #ap Rack::AARM::Configuration.configuration_hash
+        end
+
         it "Is an invalid post" do
           query_params = {}
-          body_params = {
-              :a => 'params',
-              :e => 'some',
-              :c => 'these'
-          }
+          body_params = {:a => 'params', :e => 'some', :c => 'these'}
           all_params = {}.merge(query_params).merge(body_params)
           cipher = get_cipher_for(VALID_API_SECRET)
           json_string = Hash[all_params.sort].to_json
           encoded, iv = cipher.encrypt_this(json_string)
           headers = {
-              AUTHORISATION_HEADER => "VENDOR_1:#{encoded}_#{iv}",
+              AUTHORISATION_HEADER => "#{VALID_API_KEY}:#{encoded}_#{iv}",
               CONTENT_TYPE => FORM_DATA,
               CONTENT_LENGTH => json_string.size,
               :input => StringIO.new(all_params.to_json)
@@ -221,17 +234,13 @@ describe Rack::AARM do
 
         it "Is a valid post" do
           query_params = {}
-          body_params = {
-              :a => 'params',
-              :e => 'some',
-              :c => 'these'
-          }
+          body_params = {:a => 'params', :e => 'some', :c => 'these'}
           all_params = {}.merge(query_params).merge(body_params)
           cipher = get_cipher_for(VALID_API_SECRET)
           json_string = Hash[all_params.sort].to_json
           encoded, iv = cipher.encrypt_this(json_string)
           headers = {
-              AUTHORISATION_HEADER => "VENDOR_1:#{encoded}_#{iv}",
+              AUTHORISATION_HEADER => "#{VALID_API_KEY}:#{encoded}_#{iv}",
               CONTENT_TYPE => FORM_DATA,
               CONTENT_LENGTH => json_string.size,
               :input => StringIO.new(all_params.to_json)
@@ -243,28 +252,21 @@ describe Rack::AARM do
         end
 
         it "Is a post with extra query-string parameters" do
-          query_params = {
-              :b => 'these',
-              :d => 'are',
-              :f => 'hello'
-          }
-          body_params = {
-              :a => 'params',
-              :e => 'some',
-              :c => 'these'
-          }
+          query_params = {:b => 'these', :d => 'are', :f => 'hello'}
+          body_params = {:a => 'params', :e => 'some', :c => 'these'}
           all_params = {}.merge(query_params).merge(body_params)
           cipher = get_cipher_for(VALID_API_SECRET)
           json_string = Hash[all_params.sort].to_json
           encoded, iv = cipher.encrypt_this(json_string)
           headers = {
-              AUTHORISATION_HEADER => "VENDOR_1:#{encoded}_#{iv}",
+              AUTHORISATION_HEADER => "#{VALID_API_KEY}:#{encoded}_#{iv}",
               CONTENT_TYPE => FORM_DATA,
               CONTENT_LENGTH => json_string.size,
               :input => StringIO.new(all_params.to_json)
           }
           request = Rack::MockRequest.new(Rack::AARM::Actor.new(plain))
           response = request.post("/", headers)
+          @logger.debug "Body: [#{response.body}]"
           response.status.should eq(200)
           @logger.debug "Body: [#{response.body}]"
         end

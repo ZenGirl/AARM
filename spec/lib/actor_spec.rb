@@ -58,7 +58,7 @@ describe Rack::AARM do
       # ---------------------------------------------------------------------
       # Arbitrarily set test mode
       # ---------------------------------------------------------------------
-      Rack::AARM::Configuration.environment = :test
+      Rack::AARM::Configuration.environment = :production
       # ---------------------------------------------------------------------
       # Get logger and messages
       # ---------------------------------------------------------------------

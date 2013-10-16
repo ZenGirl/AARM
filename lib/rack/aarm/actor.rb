@@ -65,6 +65,13 @@ module Rack
         return 401, false, code, [MESSAGES[code], MESSAGE2_BAD_LOCATION]
       end
 
+      def check_authorisation_header(authorisation_header)
+        return '001' if authorisation_header.nil?
+        return '002' unless authorisation_header.is_a? String
+        return '003' if authorisation_header.strip.empty?
+        false
+      end
+
       def verify
         # -----------------------------------------------------------------
         # Get the header
@@ -73,6 +80,7 @@ module Rack
         # -----------------------------------------------------------------
         # Barf if no header provided
         # -----------------------------------------------------------------
+        #(error_code = check_authorisation_header(authorisation_header)) and return error_invalid(error_code) if error_code
         return error_invalid('001') if authorisation_header.nil?
         return error_invalid('002') if !authorisation_header.is_a? String
         return error_invalid('003') if authorisation_header.strip.empty?

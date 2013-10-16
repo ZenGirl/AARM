@@ -4,14 +4,30 @@ module Rack
       class Resources
         attr_accessor :resources
 
+        # -------------------------------------------------------------------
+        # Need the helpers
+        # -------------------------------------------------------------------
+        require_relative 'helpers'
+        include Rack::AARM::DSL::Helpers
+
+        # -------------------------------------------------------------------
+        # Create a new block of resources
+        # -------------------------------------------------------------------
         def initialize
           @resources = []
         end
 
+        # -------------------------------------------------------------------
+        # Add a resource
+        # -------------------------------------------------------------------
         def add(resource)
+          raise ArgumentError.new(Rack::AARM::DSL::Helpers::ARGUMENTS_BAD) unless resource.is_a? Rack::AARM::DSL::Resource
           @resources << resource
         end
 
+        # -------------------------------------------------------------------
+        # Is resource active?
+        # -------------------------------------------------------------------
         def is_active?(path, date, verb)
           results = find_full(path, verb)
           return false if results.nil?
@@ -23,12 +39,18 @@ module Rack
           false
         end
 
+        # -------------------------------------------------------------------
+        # Find one
+        # -------------------------------------------------------------------
         def find(path)
           result = nil
           @resources.each { |resource| result = resource if path.start_with? resource.prefix }
           result
         end
 
+        # -------------------------------------------------------------------
+        # Find a verb path
+        # -------------------------------------------------------------------
         def find_full(path, verb=nil)
           results = []
           @resources.each do |resource|

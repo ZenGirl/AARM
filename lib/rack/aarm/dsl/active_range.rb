@@ -1,13 +1,18 @@
-module Rack
-  module AARM
-    module DSL
+module Rack # :nodoc: so we don't have an empty doc page for the namespace
+  module AARM # :nodoc:
+    module DSL # :nodoc:
+
+      # ---------------------------------------------------------------------
+      # Describes a standardised datetime range
+      # ---------------------------------------------------------------------
       class ActiveRange
         attr_accessor :from_date, :to_date
 
-        FROM_DATE_ERROR = 'FromDate must be a DateTime or String in the format "YYYY-MM-DD" or "YYYY-MM-DD hh:mm:ss"'
-        TO_DATE_ERROR = 'ToDate must be a DateTime or String in the format "YYYY-MM-DD" or "YYYY-MM-DD hh:mm:ss"'
-        ORDER_ERROR = 'FromDate should be earlier than ToDate'
-        INCOMING_DATE_ERROR = 'Date must be a DateTime or String in the format "YYYY-MM-DD" or "YYYY-MM-DD hh:mm:ss"'
+        # -------------------------------------------------------------------
+        # Need the helpers
+        # -------------------------------------------------------------------
+        require_relative 'helpers'
+        include Rack::AARM::DSL::Helpers
 
         # -------------------------------------------------------------------
         # Creates a new ActiveRange based on +from_date+ and +to_date+
@@ -17,9 +22,9 @@ module Rack
         #   Will raise +ArgumentError+ if not a DateTime or parseable string or +from_date+ later than +to_date+
         # -------------------------------------------------------------------
         def initialize(from_date, to_date)
-          f_d = prepare_date(from_date, FROM_DATE_ERROR)
-          t_d = prepare_date(to_date, TO_DATE_ERROR)
-          raise ArgumentError.new(ORDER_ERROR) if t_d < f_d
+          f_d = prepare_date(from_date, Rack::AARM::DSL::Helpers::FROM_DATE_ERROR)
+          t_d = prepare_date(to_date, Rack::AARM::DSL::Helpers::TO_DATE_ERROR)
+          raise ArgumentError.new(Rack::AARM::DSL::Helpers::ORDER_ERROR) if t_d < f_d
           @from_date, @to_date = f_d, t_d
         end
 
@@ -46,42 +51,26 @@ module Rack
 
         # -------------------------------------------------------------------
         # Checks an incoming date is between a range (inclusive)
+        #
         # NOTE:
         # You can't use the '===' construct as ranges only support Dates,
         # Not DateAndTimes.
+        #
+        # +date+ a +DateTime+ or DateTime parseable String
         # -------------------------------------------------------------------
         def in_range?(date)
           # Can't use ranges for date and time, only date
           # range = @from_date..@to_date
           # range === date # This doesn't work as expected
-          d = prepare_date(date, INCOMING_DATE_ERROR)
+          d = prepare_date(date, Rack::AARM::DSL::Helpers::INCOMING_DATE_ERROR)
           d >= @from_date and d <= @to_date
         end
 
+        # -------------------------------------------------------------------
+        # Override == to avoid comparison issues
+        # -------------------------------------------------------------------
         def ==(other)
           other.from_date == @from_date and other.to_date == @to_date
-        end
-
-        private
-
-        def prepare_date(date, error_message)
-          d = nil
-          if date.is_a? DateTime or date.is_a? String
-            if date.is_a? DateTime
-              d = date
-            else
-              begin
-                d = DateTime.parse(date) if date.is_a? String
-              rescue TypeError
-                raise ArgumentError.new(error_message)
-              rescue ArgumentError
-                raise ArgumentError.new(error_message)
-              end
-            end
-          else
-            raise ArgumentError.new(error_message)
-          end
-          d
         end
 
       end

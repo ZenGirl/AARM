@@ -119,7 +119,7 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
         # -------------------------------------------------------------------
         def active_on?(date)
           d = prepare_date(date, Rack::AARM::DSL::Helpers::INCOMING_DATE_ERROR)
-          active_in_keys = @vendor_keys.any? { |key| key.active_range.in_range? d}
+          active_in_keys = @vendor_keys.any? { |key| key.active_range.in_range? d }
           active_in_keys
         end
 
@@ -147,17 +147,18 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
         def can_access?(resources, opts={})
           return false unless active_on? opts[:on]
           return false unless allowed_from? opts[:ipv4], opts[:on]
-          role = find_role opts[:role], opts[:pass]
-          return false if role.nil?
-          return false unless role.active_on? opts[:on]
-          path_allowed = false
-          role.rights.each do |right|
-            if right.verbs.include? opts[:via]
-              path_allowed = true if resources.is_active? opts[:path], opts[:on], opts[:via]
+          #TODO: use roles properly
+          #role = find_role opts[:role], opts[:pass]
+          @roles.each do |role|
+            next if role.nil?
+            next unless role.active_on? opts[:on]
+            role.rights.each do |right|
+              if right.verbs.include? opts[:via]
+                return true if resources.is_active? opts[:path], opts[:on], opts[:via]
+              end
             end
           end
-          return false unless path_allowed
-          true
+          false
         end
 
         def to_hash

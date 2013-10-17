@@ -20,6 +20,13 @@ module Rack
           @logger.warn "Rack::AARM::Actor: Unverified call made: #{build_call_signature(env)}"
           [http_code, {}, [{code: code, messages: messages}.to_json]]
         end
+      rescue Exception => e
+        @logger.error "Rack::AARM::Actor: Something went bad in verification\nException: #{e}\n#{e.backtrace.join('\n')}"
+        return 500, false, 911,
+            [
+                "Something went bad at our end. We'll get someone on to it shortly.",
+                "Sorry. You'll have to try again later"
+            ]
       end
 
       private
@@ -175,6 +182,7 @@ module Rack
         # Find the resource
         # -------------------------------------------------------------------
         #ap @env,raw:true
+        #TODO: dummy role/pass combo used. The auth header needs a role/pass in it
         if vendor.can_access? Rack::AARM::Configuration.resources,
                               {
                                   :path => @env['PATH_INFO'],
@@ -187,7 +195,7 @@ module Rack
           # -------------------------------------------------------------------
           # All done and passed!
           # -------------------------------------------------------------------
-          @logger.debug "Rack::AARM::ApiKey: Passing request on to application #{@env['PATH_INFO']}"
+          @logger.debug "Rack::AARM::Actor: Passing request on to application #{@env['PATH_INFO']}"
           return 200, true, '000', %w(Failed Failed)
         end
         error_denied('100')

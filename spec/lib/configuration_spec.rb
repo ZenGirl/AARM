@@ -63,29 +63,75 @@ describe Rack::AARM do
       end
 
       # ---------------------------------------------------------------------
-      # It can handle valid yml files
+      # It can dump and restore from json
       # ---------------------------------------------------------------------
-      #it "allows configuration from valid yml file" do
-      #  Rack::AARM::Configuration.reset
-      #  err_logger = Logger.new(STDERR)
-      #  err_logger.level = ::Logger::DEBUG
-      #  err_logger.datetime_format = '%Y-%m-%d %H:%M:%S'
-      #  err_logger.formatter = proc do |severity, datetime, progname, msg|
-      #    "#{datetime.utc}: [#{severity.ljust(8)}] #{msg}\n"
-      #  end
-      #  Rack::AARM::Configuration.logger = err_logger
-      #  Rack::AARM::Configuration.environment = :test
-      #  Rack::AARM::Configuration.configure_from(File.join(__dir__,'..','vendors.yml'))
-      #  vendors = Rack::AARM::Configuration.vendors
-      #  expect(vendors.size).to eql(2)
-      #  expect(vendors[0][:name]).to eql('vendor1')
-      #  expect(vendors[1][:name]).to eql('vendor2')
-      #  Rack::AARM::Configuration.configure_from(File.join(__dir__,'..','resources.yml'))
-      #  resources = Rack::AARM::Configuration.resources
-      #  expect(resources.size).to eql(2)
-      #  expect(resources[0][:name]).to eql('Billings Active')
-      #  expect(resources[1][:name]).to eql('Billings In-Active')
-      #end
+      it "can dump and restore from json file" do
+        resources = Rack::AARM::DSL::Resources.new
+
+        resource = Rack::AARM::DSL::Resource.new(1, 'billings.active', '/billings/api/v1')
+        resource.add_suffix(Regexp.new('^\/banks$'))
+        .add_verb('GET').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).back_to_suffix
+        .add_verb('POST').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).back_to_suffix
+        .add_verb('HEAD').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).back_to_suffix
+        resource.add_suffix(Regexp.new('^\/banks/[\d]+$'))
+        .add_verb('GET').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).back_to_suffix
+        .add_verb('PUT').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).back_to_suffix
+        .add_verb('DELETE').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).back_to_suffix
+        resources.add(resource)
+
+        all_past_to_20131001 = Rack::AARM::DSL::ActiveRange.new(Rack::AARM::DSL::ActiveRange.all_past, DateTime.new(2013, 10, 1))
+        from_20131003_on = Rack::AARM::DSL::ActiveRange.new(DateTime.new(2013, 10, 3), Rack::AARM::DSL::ActiveRange.all_future)
+
+        resource = Rack::AARM::DSL::Resource.new(2, 'billings.with.missing.date', '/billings/api/v2')
+        resource.add_suffix(Regexp.new('^\/banks$'))
+        .add_verb('GET').add_active_range(all_past_to_20131001).add_active_range(from_20131003_on).back_to_suffix
+        .add_verb('POST').add_active_range(all_past_to_20131001).add_active_range(from_20131003_on).back_to_suffix
+        .add_verb('HEAD').add_active_range(all_past_to_20131001).add_active_range(from_20131003_on).back_to_suffix
+        resource.add_suffix(Regexp.new('^\/banks/[\d]+$'))
+        .add_verb('GET').add_active_range(all_past_to_20131001).add_active_range(from_20131003_on).back_to_suffix
+        .add_verb('PUT').add_active_range(all_past_to_20131001).add_active_range(from_20131003_on).back_to_suffix
+        .add_verb('DELETE').add_active_range(all_past_to_20131001).add_active_range(from_20131003_on).back_to_suffix
+        resources.add(resource)
+
+        Rack::AARM::Configuration.resources = resources
+
+        vendors = Rack::AARM::DSL::Vendors.new
+
+        vendor = Rack::AARM::DSL::Vendor.new(1, 'vendor1')
+        .add_key(Rack::AARM::DSL::ActiveRange.for_all_time, "QOYNT/+GeMBQJzX+QSBuEA==", "MpzZMi+Aug6m/vd5VYdHrA==")
+        .make_restricted_by_locations
+        .add_location(Rack::AARM::DSL::Location.new('127.0.0.1').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time))
+        .add_role('default', 'vendor1_default', '1f6edad466a632cb0c91fdc9c500b437').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).add_rights(%w(GET), [1]).back_to_vendor
+        .add_role('admin', 'vendor1_admin', 'b616111a3c791f223b89957e72859ad2').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).add_rights(%w(GET POST PUT DELETE), [1, 2]).back_to_vendor
+
+        vendors.add vendor
+
+        vendor = Rack::AARM::DSL::Vendor.new(2, 'vendor2')
+        .add_key(Rack::AARM::DSL::ActiveRange.new('2013-10-01', '2013-10-31'), "wBxPg1il07wNMdkClLWsqg==", "q9cqANbXvthP6ypSMwQ3ow==")
+        .make_restricted_by_locations
+        .add_location(Rack::AARM::DSL::Location.new('127.0.0.1').add_active_range(Rack::AARM::DSL::ActiveRange.new('2013-10-01', '2013-10-14')).add_active_range(Rack::AARM::DSL::ActiveRange.new('2013-10-21', '2013-10-31')))
+        .add_location(Rack::AARM::DSL::Location.new('192.168.3.129').add_active_range(Rack::AARM::DSL::ActiveRange.new('2013-10-15', '2013-10-20')))
+        .add_role('reader12', 'vendor2_reader', '632357780d36658bf7f302b1c29c1620').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).add_rights(%w(GET), [1, 2]).back_to_vendor
+        .add_role('author12', 'vendor2_author', '782c9b1f47709012c0797aadd11efdf4').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).add_rights(%w(GET POST PUT), [1, 2]).back_to_vendor
+        .add_role('editor2', 'vendor2_editor', 'fc730593435b207f1d9bf62e53361cf4').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).add_rights(%w(GET POST PUT), [2]).back_to_vendor
+        .add_role('owner12', 'vendor2_owner', 'd1c21ef0802ee1849e048124510295ca').add_active_range(Rack::AARM::DSL::ActiveRange.for_all_time).add_rights(%w(GET POST PUT DELETE), [1, 2]).back_to_vendor
+
+        vendors.add vendor
+
+        Rack::AARM::Configuration.vendors = vendors
+
+        vendors_hash_1 = vendors.to_hash
+        resources_hash_1 = resources.to_hash
+
+        Rack::AARM::Configuration.dump_to_json_file('/tmp/config.json')
+        Rack::AARM::Configuration.restore_from_json_file('/tmp/config.json')
+
+        vendors_hash_2 = vendors.to_hash
+        resources_hash_2 = resources.to_hash
+
+        expect(JSON.generate(vendors_hash_1)).to eql(JSON.generate(vendors_hash_2))
+        expect(JSON.generate(resources_hash_1)).to eql(JSON.generate(resources_hash_2))
+      end
 
     end
 

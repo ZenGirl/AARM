@@ -9,7 +9,7 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
       #   See +/doc/aarm_-_authentication_authorisation_rack_middleware.html+
       # ---------------------------------------------------------------------
       class Vendor
-        attr_accessor :id, :name, :vendor_keys, :active_ranges, :use_locations, :locations, :roles
+        attr_accessor :id, :name, :vendor_keys, :use_locations, :locations, :roles
 
         # -------------------------------------------------------------------
         # Need the helpers
@@ -41,7 +41,7 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
           raise ArgumentError.new(Rack::AARM::DSL::Helpers::VENDOR_ID_BAD) if id.nil? or !id.is_a? Integer or id < 1
           raise ArgumentError.new(Rack::AARM::DSL::Helpers::VENDOR_NAME_BAD) if name.nil? or !name.is_a? String or name.strip.blank?
           @id, @name = id, name
-          @vendor_keys, @active_ranges, @use_locations, @locations, @roles = [], [], false, [], []
+          @vendor_keys, @use_locations, @locations, @roles = [], false, [], []
           @resources = []
         end
 
@@ -51,17 +51,6 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
         # -------------------------------------------------------------------
         def add_key(active_range, key, secret)
           @vendor_keys << VendorKey.new(active_range, key, secret)
-          self
-        end
-
-        # -------------------------------------------------------------------
-        # Adds an active date range
-        # Method is chainable.
-        #TODO: Check range is not present and not overlapping
-        # -------------------------------------------------------------------
-        def add_active_range(active_range)
-          raise ArgumentError.new(Rack::AARM::DSL::Helpers::ARGUMENTS_BAD) unless active_range.is_a? Rack::AARM::DSL::ActiveRange
-          @active_ranges << active_range
           self
         end
 
@@ -130,7 +119,16 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
         # -------------------------------------------------------------------
         def active_on?(date)
           d = prepare_date(date, Rack::AARM::DSL::Helpers::INCOMING_DATE_ERROR)
-          @active_ranges.any? { |active_range| active_range.in_range? d }
+          active_in_keys = @vendor_keys.any? { |key| key.active_range.in_range? d}
+          active_in_keys
+        end
+
+        def first_active_key(date)
+          d = prepare_date(date, Rack::AARM::DSL::Helpers::INCOMING_DATE_ERROR)
+          @vendor_keys.each do |key|
+            return key if key.active_range.in_range? d
+          end
+          nil
         end
 
         # -------------------------------------------------------------------
@@ -167,7 +165,6 @@ module Rack # :nodoc: so we don't have an empty doc page for the namespace
               id: @id, name: @name, vendor_keys: [], active_ranges: [], use_locations: @use_locations, locations: [], roles: []
           }
           @vendor_keys.each { |obj| hash[:vendor_keys] << obj.to_hash }
-          @active_ranges.each { |key| hash[:active_ranges] << key.to_hash }
           @locations.each { |key| hash[:locations] << key.to_hash }
           @roles.each { |key| hash[:roles] << key.to_hash }
           hash

@@ -65,27 +65,27 @@ describe Rack::AARM do
       # ---------------------------------------------------------------------
       # It can handle valid yml files
       # ---------------------------------------------------------------------
-      it "allows configuration from valid yml file" do
-        Rack::AARM::Configuration.reset
-        err_logger = Logger.new(STDERR)
-        err_logger.level = ::Logger::DEBUG
-        err_logger.datetime_format = '%Y-%m-%d %H:%M:%S'
-        err_logger.formatter = proc do |severity, datetime, progname, msg|
-          "#{datetime.utc}: [#{severity.ljust(8)}] #{msg}\n"
-        end
-        Rack::AARM::Configuration.logger = err_logger
-        Rack::AARM::Configuration.environment = :test
-        Rack::AARM::Configuration.configure_from(File.join(__dir__,'..','vendors.yml'))
-        vendors = Rack::AARM::Configuration.vendors
-        expect(vendors.size).to eql(2)
-        expect(vendors[0][:name]).to eql('vendor1')
-        expect(vendors[1][:name]).to eql('vendor2')
-        Rack::AARM::Configuration.configure_from(File.join(__dir__,'..','resources.yml'))
-        resources = Rack::AARM::Configuration.resources
-        expect(resources.size).to eql(2)
-        expect(resources[0][:name]).to eql('Billings Active')
-        expect(resources[1][:name]).to eql('Billings In-Active')
-      end
+      #it "allows configuration from valid yml file" do
+      #  Rack::AARM::Configuration.reset
+      #  err_logger = Logger.new(STDERR)
+      #  err_logger.level = ::Logger::DEBUG
+      #  err_logger.datetime_format = '%Y-%m-%d %H:%M:%S'
+      #  err_logger.formatter = proc do |severity, datetime, progname, msg|
+      #    "#{datetime.utc}: [#{severity.ljust(8)}] #{msg}\n"
+      #  end
+      #  Rack::AARM::Configuration.logger = err_logger
+      #  Rack::AARM::Configuration.environment = :test
+      #  Rack::AARM::Configuration.configure_from(File.join(__dir__,'..','vendors.yml'))
+      #  vendors = Rack::AARM::Configuration.vendors
+      #  expect(vendors.size).to eql(2)
+      #  expect(vendors[0][:name]).to eql('vendor1')
+      #  expect(vendors[1][:name]).to eql('vendor2')
+      #  Rack::AARM::Configuration.configure_from(File.join(__dir__,'..','resources.yml'))
+      #  resources = Rack::AARM::Configuration.resources
+      #  expect(resources.size).to eql(2)
+      #  expect(resources[0][:name]).to eql('Billings Active')
+      #  expect(resources[1][:name]).to eql('Billings In-Active')
+      #end
 
     end
 

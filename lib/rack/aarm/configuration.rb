@@ -5,7 +5,9 @@ module Rack
     class Configuration
       ENVIRONMENTS = [:test, :development, :production]
       @current_env = :production
-      @config = {}
+      @vendors = []
+      @resources = []
+      @testing_date = DateTime.now
 
       ## -------------------------------------------------------------------------
       ## Configure through hash
@@ -22,34 +24,57 @@ module Rack
       #   Rack::AARM::configure_from('vendors.yml')
       # Yields a merged @config
       # -------------------------------------------------------------------------
-      def self.configure_from(path_to_yaml_file)
-        begin
-          @config ||= {}
-          yaml = YAML::load(IO.read(path_to_yaml_file))
-          @config = @config.merge(yaml)
-        rescue Errno::ENOENT
-          @logger.warn "Rack::AARM::Configuration: YAML configuration file [#{path_to_yaml_file}] couldn't be found. Using defaults."
-        rescue TypeError
-          @logger.warn "Rack::AARM::Configuration: YAML configuration file [#{path_to_yaml_file}] contains invalid syntax. Using defaults."
-        end
-      end
+      #def self.configure_from(path_to_yaml_file)
+      #  begin
+      #    @config ||= {}
+      #    yaml = YAML::load(IO.read(path_to_yaml_file))
+      #    @config = @config.merge(yaml)
+      #  rescue Errno::ENOENT
+      #    @logger.warn "Rack::AARM::Configuration: YAML configuration file [#{path_to_yaml_file}] couldn't be found. Using defaults."
+      #  rescue TypeError
+      #    @logger.warn "Rack::AARM::Configuration: YAML configuration file [#{path_to_yaml_file}] contains invalid syntax. Using defaults."
+      #  end
+      #end
 
       def self.configuration_hash
-        @config
+        {
+            vendors: @vendors,
+            resources: @resources
+        }
       end
 
       def self.vendors
-        @config[:vendors]
+        @vendors
+      end
+
+      def self.vendors=(v)
+        @vendors = v
       end
 
       def self.resources
-        @config[:resources]
+        @resources
       end
+
+      def self.resources=(r)
+        @resources = r
+      end
+
+      # ---------------------------------------------------------------------
+      # Purely for testing
+      def self.test_date
+        @testing_date
+      end
+
+      def self.test_date=(d)
+        @testing_date = d
+      end
+      # =====================================================================
 
       def self.reset
         @current_env = :production
-        @config = {}
-        @logger = ::Logger.new(STDOUT)
+        @vendors = []
+        @resources = []
+        @logger = ::Logger.new(STDERR)
       end
 
       def self.environment=(env)
@@ -63,28 +88,6 @@ module Rack
       def self.environment
         @current_env
       end
-
-      #-------------------------------------------------------------------------
-      #Vendors for testing
-      #-------------------------------------------------------------------------
-      #@vendors = []
-      #def self.vendors=(vendors)
-      #  @vendors = vendors
-      #end
-      #def self.vendors
-      #  @vendors
-      #end
-
-      # -------------------------------------------------------------------------
-      # locations for testing
-      # -------------------------------------------------------------------------
-      #@locations = []
-      #def self.locations=(locations)
-      #  @locations = locations
-      #end
-      #def self.locations
-      #  @locations
-      #end
 
       # -------------------------------------------------------------------------
       # Logger

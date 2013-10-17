@@ -53,9 +53,13 @@ module Rack
           result
         end
 
+        def each(&block)
+          @vendors.each(&block)
+        end
+
         def to_hash
           hash = []
-          vendors.each do |vendor|
+          @vendors.each do |vendor|
             hash << vendor.to_hash
           end
           hash

@@ -24,7 +24,7 @@ module Rack
 
             vendors = Vendors.new
             vendor = Vendor.new(1, 'Gumby')
-            vendor.add_active_range(ActiveRange.new('2013-10-01', '2013-10-10')).add_active_range(ActiveRange.new('2013-10-20', '2013-10-29'))
+            #vendor.add_active_range(ActiveRange.new('2013-10-01', '2013-10-10')).add_active_range(ActiveRange.new('2013-10-20', '2013-10-29'))
             expect { vendors.add(vendor) }.not_to raise_error
 
           end
@@ -33,11 +33,11 @@ module Rack
             vendors = Vendors.new
             vendor1 = Vendor.new(1, 'Gumby')
             vendor1.add_key(ActiveRange.for_all_time, "QOYNT/+GeMBQJzX+QSBuEA==", "MpzZMi+Aug6m/vd5VYdHrA==")
-            vendor1.add_active_range(ActiveRange.new('2013-10-01', '2013-10-10')).add_active_range(ActiveRange.new('2013-10-20', '2013-10-29'))
+            #vendor1.add_active_range(ActiveRange.new('2013-10-01', '2013-10-10')).add_active_range(ActiveRange.new('2013-10-20', '2013-10-29'))
             vendors.add(vendor1)
             vendor2 = Vendor.new(2, 'Gonzo')
             vendor2.add_key(ActiveRange.new('2013-10-01', '2013-10-31'), "wBxPg1il07wNMdkClLWsqg==", "q9cqANbXvthP6ypSMwQ3ow==")
-            vendor2.add_active_range(ActiveRange.new('2013-10-01', '2013-10-10')).add_active_range(ActiveRange.new('2013-10-20', '2013-10-29'))
+            #vendor2.add_active_range(ActiveRange.new('2013-10-01', '2013-10-10')).add_active_range(ActiveRange.new('2013-10-20', '2013-10-29'))
             vendors.add(vendor2)
 
             expect(vendors.exist?('Gumby')).to be_true

@@ -18,6 +18,27 @@ module Rack
           require_relative '../../../lib/rack/aarm/dsl/helpers'
           include Rack::AARM::DSL::Helpers
 
+          before(:each) do
+            # Set testing_date
+            test_date = Date.new(2013,10,17).to_datetime
+            yesterday = test_date.prev_day.to_datetime
+            tomorrow = test_date.next_day.to_datetime
+            Rack::AARM::Configuration.test_date = test_date.to_datetime
+            # Set some active ranges
+            before_today = Rack::AARM::DSL::ActiveRange.new(Rack::AARM::DSL::ActiveRange.all_past, yesterday)
+            after_today = Rack::AARM::DSL::ActiveRange.new(tomorrow, Rack::AARM::DSL::ActiveRange.all_future)
+            all_time = Rack::AARM::DSL::ActiveRange.for_all_time
+            # First is only active from epoch to yesterday
+            key1, secret1 = Rack::AARM::APIKey.get_new_key_pair
+            @vendor1 = Rack::AARM::DSL::Vendor.new(1, 'vendor1').add_key(before_today, key1, secret1)
+            # Second is valid across time
+            key2, secret2 = Rack::AARM::APIKey.get_new_key_pair
+            @vendor2 = Rack::AARM::DSL::Vendor.new(2, 'vendor2').add_key(all_time, key2, secret2)
+            # Third is valid from tomorrow
+            key3, secret3 = Rack::AARM::APIKey.get_new_key_pair
+            @vendor3 = Rack::AARM::DSL::Vendor.new(3, 'vendor3').add_key(after_today, key3, secret3)
+          end
+
           it "should raise an error if passed nils" do
             expect { Vendor.new(nil, nil) }.to raise_error ArgumentError, Rack::AARM::DSL::Helpers::VENDOR_ID_BAD
             expect { Vendor.new(nil, '') }.to raise_error ArgumentError, Rack::AARM::DSL::Helpers::VENDOR_ID_BAD
@@ -44,14 +65,6 @@ module Rack
             expect { vendor.add_key(range, 'API_KEY', '') }.to raise_error ArgumentError, Rack::AARM::DSL::Helpers::ARGUMENTS_BAD
           end
 
-          it "should allow adding active ranges" do
-            vendor = Vendor.new(1, 'Gumby')
-            range1 = ActiveRange.new('2013-10-01', '2013-10-10')
-            range2 = ActiveRange.new('2013-10-20', '2013-10-29')
-            vendor.add_active_range(range1).add_active_range(range2)
-            expect(vendor.active_ranges.size).to eql(2)
-          end
-
           it "should allow making and unmaking a vendor use locations" do
             vendor = Vendor.new(1, 'Gumby')
             expect(vendor.uses_locations?).to be_false
@@ -69,18 +82,18 @@ module Rack
           end
 
           it "should respond correctly to various active_ranges" do
-            vendor = Vendor.new(1, 'Gumby')
-            range1 = ActiveRange.new('2013-10-01', '2013-10-10')
-            range2 = ActiveRange.new('2013-10-20', '2013-10-29')
-            vendor.add_active_range(range1).add_active_range(range2)
-            (1..10).each do |dd|
-              expect(vendor.active_on? "2013-10-%02d" % dd).to be_true
+            (1..16).each do |dd|
+              expect(@vendor1.active_on? "2013-10-%02d" % dd).to be_true
+              expect(@vendor2.active_on? "2013-10-%02d" % dd).to be_true
+              expect(@vendor3.active_on? "2013-10-%02d" % dd).to be_false
             end
-            (11..19).each do |dd|
-              expect(vendor.active_on? "2013-10-%02d" % dd).to be_false
-            end
+            expect(@vendor1.active_on? "2013-10-17").to be_false
+            expect(@vendor2.active_on? "2013-10-17").to be_true
+            expect(@vendor3.active_on? "2013-10-17").to be_false
             (20..29).each do |dd|
-              expect(vendor.active_on? "2013-10-%02d" % dd).to be_true
+              expect(@vendor1.active_on? "2013-10-%02d" % dd).to be_false
+              expect(@vendor2.active_on? "2013-10-%02d" % dd).to be_true
+              expect(@vendor3.active_on? "2013-10-%02d" % dd).to be_true
             end
           end
 
@@ -136,7 +149,6 @@ module Rack
             # Create a vendor
             vendor = Vendor.new(1, 'vendor1')
             .add_key(ActiveRange.for_all_time, "QOYNT/+GeMBQJzX+QSBuEA==", "MpzZMi+Aug6m/vd5VYdHrA==")
-            .add_active_range(ActiveRange.for_all_time)
             .make_restricted_by_locations
             .add_location(Location.new('127.0.0.1').add_active_range(ActiveRange.for_all_time))
             .add_role('default', 'vendor1_default', '1f6edad466a632cb0c91fdc9c500b437').add_active_range(ActiveRange.for_all_time).add_rights(%w(GET), [1]).back_to_vendor

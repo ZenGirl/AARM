@@ -6,6 +6,19 @@ module Rack
 
       attr_accessor :logger
 
+      class << self
+
+        def get_new_key_pair
+          cipher = OpenSSL::Cipher::AES.new(128, :CBC)
+          key = Base64.encode64(cipher.random_key).gsub(/\n/, '')
+          cipher.encrypt
+          cipher.key = key
+          secret = Base64.encode64(cipher.random_iv).gsub(/\n/, '')
+          return key, secret
+        end
+
+      end
+
       # Creates a new cipher class.
       # This uses a AES 128bit CBC cipher
       # The +api_key+ is in the clear
@@ -28,7 +41,11 @@ module Rack
       #    cipher instance
       def initialize(api_secret)
         @api_secret = api_secret
-        @logger = Rack::AARM::Configuration.logger
+        begin
+          @logger = Rack::AARM::Configuration.logger
+        rescue
+          @logger = ::Logger.new(STDERR)
+        end
         @logger.info "Rack::AARM::APIKey: Generating AES 128bit CBC cipher"
         @cipher = OpenSSL::Cipher::AES.new(128, :CBC)
       end
